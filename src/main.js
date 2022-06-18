@@ -2,11 +2,15 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+
 // 导入axios实例
 import request from './utils/request'
 
 // 导入注册vant组件的模块
 import '@/utils/vant-ui'
+
+// 导入全局样式文件  要写在vant-ui下面
+import '@/styles/index.scss'
 
 // 导入amfe-flexible文件，处理html标签的font-size大小
 import 'amfe-flexible'
