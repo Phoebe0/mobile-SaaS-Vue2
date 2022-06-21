@@ -20,3 +20,12 @@ export const reqSendCode = (mobile) => request({
     mobile
   }
 })
+
+// 获取用户个人资料接口
+export const reqGetUserInfo = () => request({
+  method: 'get',
+  url: '/v1_0/user/profile'
+  // headers: {
+  //   Authorization: `Bearer ${store.state.user.tokenInfo.token}`
+  // }
+})

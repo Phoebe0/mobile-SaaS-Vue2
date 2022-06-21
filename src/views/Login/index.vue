@@ -35,12 +35,14 @@
     color="linear-gradient(to right, #33fc21, #62a901)"
     @click="login"
     >登录</van-button>
+
     </van-cell-group>
   </div>
 </template>
 
 <script>
 import { reqLogin, reqSendCode } from '@/api/user'
+import { mapMutations } from 'vuex'
 export default {
   name: 'Login',
   data () {
@@ -52,7 +54,8 @@ export default {
     }
   },
   methods: {
-
+    // ...mapMutations('模块名', ['mutation名'])
+    ...mapMutations('user', ['setTokenInfo']),
     // 校验的方法
     validate () {
       // 手机号的非空校验
@@ -91,7 +94,9 @@ export default {
         overlay: true, // 显示遮罩
         duration: 0 // 展示时长，值为0时不会消失
       })
-      await reqLogin(this.mobile, this.code)
+      const { data: { data } } = await reqLogin(this.mobile, this.code)
+      // 提交到user模块中存储token的mutation
+      this.setTokenInfo(data)
       // Toast 默认采用单例模式，即同一时间只会存在一个 Toast
       this.$toast.success('恭喜大大登录♥')
     },
