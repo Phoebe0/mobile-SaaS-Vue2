@@ -5,7 +5,7 @@ import store from '@/store'
 // 创建axios实例，对axios进行配置
 
 const request = axios.create({
-  baseURL: 'http://10.10.13.159:8000',
+  baseURL: 'http://10.10.13.205:8000',
   timeout: 5000 // 请求服务5s没有响应，终止请求
 })
 
