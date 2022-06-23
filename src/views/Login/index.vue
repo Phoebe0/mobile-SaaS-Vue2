@@ -2,7 +2,7 @@
   <div>
     <!-- 导航头部 -->
     <!-- van-nav-bar等即使标签也是类名 -->
-    <van-nav-bar title="标题"/>
+    <van-nav-bar title="登录"/>
     <!-- 登陆输入框 -->
 
     <van-form @submit="onSubmit">
