@@ -67,6 +67,8 @@ export default {
         this.setTokenInfo(data)
         // Toast 默认采用单例模式，即同一时间只会存在一个 Toast
         this.$toast.success('恭喜大大登录♥')
+        // 登陆成功后，使用编程式导航跳转至首页
+        this.$router.push({ path: '/' })
       } catch (error) {
         this.$toast.fail('登陆失败')
       }
