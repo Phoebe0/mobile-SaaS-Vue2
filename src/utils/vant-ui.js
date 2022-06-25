@@ -1,7 +1,7 @@
 // 是一个工具模块，只做vant组件的注册
 
 import Vue from 'vue'
-import { Button, CellGroup, Field, NavBar, Popup, Toast, Form, Tabbar, TabbarItem, Tab, Tabs } from 'vant'
+import { Button, CellGroup, Field, NavBar, Popup, Toast, Form, Tabbar, TabbarItem, Tab, Tabs, List, Cell } from 'vant'
 
 // 在注册vue组件，内部是执行了一个install函数
 Vue.use(Button)
@@ -15,3 +15,5 @@ Vue.use(Button)
   .use(TabbarItem)
   .use(Tab)
   .use(Tabs)
+  .use(List)
+  .use(Cell)
