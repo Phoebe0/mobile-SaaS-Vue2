@@ -13,7 +13,7 @@
       finished-text="已经看到人家底部了~"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item.art_id" :title="item.title" />
+      <van-cell v-for="item in list" :key="item.art_id.toString()" :title="item.title" />
     </van-list>
   </div>
 </template>
