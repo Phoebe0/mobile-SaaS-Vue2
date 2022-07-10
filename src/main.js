@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+// 按需导入过滤器方法
+import { relTime } from '@/utils/filters'
 
 // 导入axios实例
 import request from './utils/request'
@@ -14,6 +16,8 @@ import '@/styles/index.scss'
 
 // 导入amfe-flexible文件，处理html标签的font-size大小
 import 'amfe-flexible'
+
+Vue.filter('relTime', relTime)
 
 Vue.config.productionTip = false
 

@@ -7,14 +7,33 @@
       4. @load事件是默认上来看数据是否占满屏幕，没有沾满就执行一次，如果屏幕没有沾满继续执行内部自动将loading设置为true,需要手动将loading改为false
       触底也会执行load事件
      -->
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="已经看到人家底部了~"
-      @load="onLoad"
+    <van-pull-refresh
+      v-model="isRefresh"
+      success-text="刷新成功"
+      @refresh="onRefresh"
     >
-      <van-cell v-for="item in list" :key="item.art_id.toString()" :title="item.title" />
-    </van-list>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="已经看到人家底部了~"
+        @load="onLoad"
+      >
+        <van-cell v-for="item in list" :key="item.art_id" :title="item.title">
+          <!-- cell组件内置的具名插槽 label 可以自定义标题下方的内容 -->
+          <template #label>
+            <!-- 图片 -->
+              <van-grid :column-num="item.cover.type">
+                <van-grid-item v-for="(imgUrl,index) in item.cover.images" :key="index">
+                  <van-image lazy-load :src="imgUrl" />
+                </van-grid-item>
+              </van-grid>
+            <span>{{ item.aut_name }} </span>
+            <span>{{ item.comm_count }}评论 </span>
+            <span>{{ item.pubdate | relTime }}</span>
+          </template>
+        </van-cell>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -33,7 +52,8 @@ export default {
       list: [],
       loading: false,
       finished: false,
-      timestamp: '' // 时间戳，第一次请求之前为空
+      timestamp: '', // 时间戳，第一次请求之前为空
+      isRefresh: false // 下拉刷新的状态
     }
   },
   methods: {
@@ -49,7 +69,7 @@ export default {
       try {
         const { data: { data: { results, pre_timestamp: timestamp } } } = await reqGetArticleLists(this.channel.id, this.timestamp)
 
-        this.list.push(...results) // 将数据展开push存储
+        this.list = [...this.list, ...results]
         this.timestamp = timestamp // 存储指定时间的时间戳
         // loading时间内部会将loading设置为true， 手动改为false
         this.loading = false
@@ -57,6 +77,20 @@ export default {
         // 如果接口没数据了，则显示finished-text文本
         this.finished = true
       }
+    },
+    // 下拉刷新
+    // 下拉刷新期间，会自动将isRefresh设置为true，下拉结束后需要手动设置为false
+    async onRefresh () {
+      console.log('xiala')
+      // 请求最新数据，请求结束后isRefresh设置为false
+      // 携带数据 数据1：频道id  数据2：最新的时间戳
+      const { data: { data: { results, pre_timestamp: timestamp } } } = await reqGetArticleLists(this.channel.id, +new Date())
+      // console.log(res)
+      // 拿到最新的数据直接覆盖原来数据
+      this.list = results
+      // 下一次滑动请求返回指定的时间戳赋值
+      this.timestamp = timestamp
+      this.isRefresh = false
     }
   }
 }
