@@ -30,6 +30,10 @@
             <span>{{ item.aut_name }} </span>
             <span>{{ item.comm_count }}评论 </span>
             <span>{{ item.pubdate | relTime }}</span>
+            <!-- 只有登录的用户, 才能看见这个 x 按钮 -->
+            <span class="close" @click="showMoreAction(item)" v-if="$store.state.user.tokenInfo.token">
+              <van-icon name="cross"></van-icon>
+            </span>
           </template>
         </van-cell>
       </van-list>
@@ -39,6 +43,7 @@
 
 <script>
 import { reqGetArticleLists } from '@/api/channels'
+import { reqDislikeArticle } from '@/api/article'
 export default {
   name: 'ArticleList',
   props: {
@@ -53,7 +58,8 @@ export default {
       loading: false,
       finished: false,
       timestamp: '', // 时间戳，第一次请求之前为空
-      isRefresh: false // 下拉刷新的状态
+      isRefresh: false, // 下拉刷新的状态
+      disLikeId: '' // 不感兴趣传递的id
     }
   },
   methods: {
@@ -91,11 +97,29 @@ export default {
       // 下一次滑动请求返回指定的时间戳赋值
       this.timestamp = timestamp
       this.isRefresh = false
+    },
+    // 子传父   点击删除按钮显示弹出框
+    showMoreAction (item) {
+      this.disLikeId = item.art_id.toString()
+      this.$emit('showMore', true, this.channel.id)
+    },
+    // 截取新闻列表
+    async removeList () {
+      console.log('移除新闻')
+      // 拿着disLikeId找索引，然后截取文章列表
+      this.list = this.list.filter(item => item.art_id.toString() !== this.disLikeId)
+      // 发请求不感兴趣此类文章，不再推荐
+      await reqDislikeArticle(this.disLikeId)
+      // 通知父组件请求发送成功之后关闭弹框
+      this.$emit('closePop')
     }
   }
 }
 </script>
 
 <style lang="scss">
-
+.close{
+      float: right;
+      margin-top: 4px;
+    }
 </style>
