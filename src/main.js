@@ -20,6 +20,8 @@ import 'amfe-flexible'
 Vue.filter('relTime', relTime)
 
 Vue.config.productionTip = false
+// 创建事件中心
+Vue.prototype.bus = new Vue()
 
 // 将axios实例挂载到Vue原型上  （目的是 数据和属性的共享）
 Vue.prototype.$request = request

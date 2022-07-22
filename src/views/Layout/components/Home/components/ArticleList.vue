@@ -43,7 +43,7 @@
 
 <script>
 import { reqGetArticleLists } from '@/api/channels'
-import { reqDislikeArticle } from '@/api/article'
+import { reqDislikeArticle, reqReportArticle } from '@/api/article'
 export default {
   name: 'ArticleList',
   props: {
@@ -51,6 +51,7 @@ export default {
       type: Object,
       required: true
     }
+
   },
   data () {
     return {
@@ -103,7 +104,7 @@ export default {
       this.disLikeId = item.art_id.toString()
       this.$emit('showMore', true, this.channel.id)
     },
-    // 截取新闻列表
+    // 不感兴趣 ———— 截取新闻列表
     async removeList () {
       console.log('移除新闻')
       // 拿着disLikeId找索引，然后截取文章列表
@@ -112,6 +113,12 @@ export default {
       await reqDislikeArticle(this.disLikeId)
       // 通知父组件请求发送成功之后关闭弹框
       this.$emit('closePop')
+    },
+    // 举报文章
+    async reportList (value) {
+      this.list = this.list.filter(item => item.art_id.toString() !== this.disLikeId)
+      const res = await reqReportArticle(this.disLikeId, value)
+      console.log('举报文章🍄', res)
     }
   }
 }

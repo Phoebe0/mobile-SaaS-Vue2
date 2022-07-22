@@ -15,7 +15,7 @@
 
     <van-popup v-model="show">
       <!-- 抽离弹出框内容子组件 -->
-      <MoreAction @disLike="disLike"></MoreAction>
+      <MoreAction ref="moreActionRef" @disLike="disLike"></MoreAction>
     </van-popup>
   </div>
 </template>
@@ -38,8 +38,24 @@ export default {
       channelId: '' // 传递的频道id
     }
   },
-  created () {
+  mounted () {
     this.getUserChannel()
+    // 订阅事件
+    this.bus.$on('reportArt', value => {
+      // vlaue是举报文章的类型，存到父组件中，通过属性绑定传递给ArticleList
+      // this.value = value
+      // 使用ArticleList组件中截取数据的方法
+      const index = this.$refs.articleListRef.findIndex(item => item.channel.id === this.channelId)
+      // console.log(index)
+      this.$refs.articleListRef[index].reportList(value)
+      // 关闭弹层之前，将子组件的isReport改为初始值false
+      // 组件还没有渲染出来，是异步的，所以要用$nextTick(() => {})
+      this.$nextTick(() => {
+        this.$refs.moreActionRef.isReport = false
+      })
+      // 父组件直接关闭弹层
+      this.show = false
+    })
   },
   methods: {
     // 获取用户频道
