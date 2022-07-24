@@ -1,14 +1,12 @@
 // 关于频道的模块
-// 关于用户的模块
 
 const state = {
-  // 用户token信息
-  tokenInfo: {}
+  channels: [] // 我的频道的数据
 }
 const mutations = {
-  // 将用户token存储到 vuex中的mutation
-  setTokenInfo (state, tokenObj) {
-    state.tokenInfo = tokenObj
+  // 设置我的频道的数据
+  setChannels (state, channels) {
+    state.channels = channels
   }
 }
 const actions = {}

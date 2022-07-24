@@ -11,6 +11,15 @@
         @closePop="show=false"
         ></ArticleList>
       </van-tab>
+      <!-- 频道列表开关 通过定位 -->
+      <div class="bar-btn" @click="showChannel = true">
+        <van-icon name="wap-nav"/>
+      </div>
+      <!-- 频道管理的弹出层 -->
+      <van-action-sheet v-model="showChannel" title="频道管理">
+        <!-- 频道管理内容子组件 -->
+        <ChannelEdit></ChannelEdit>
+      </van-action-sheet>
     </van-tabs>
 
     <van-popup v-model="show">
@@ -24,19 +33,25 @@
 import { reqGetUserChannel } from '@/api/channels'
 import ArticleList from './components/ArticleList.vue'
 import MoreAction from './components/MoreAction.vue'
+import ChannelEdit from './components/ChannelEdit.vue'
+import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'Home',
   components: {
     ArticleList,
-    MoreAction
+    MoreAction,
+    ChannelEdit
   },
   data () {
     return {
       active: 0,
-      channels: [], // 用户频道列表
       show: false, // 控制对话框显示与隐藏
-      channelId: '' // 传递的频道id
+      channelId: '', // 传递的频道id
+      showChannel: false // 频道管理面板的显示与隐藏
     }
+  },
+  computed: {
+    ...mapState('channels', ['channels'])
   },
   mounted () {
     this.getUserChannel()
@@ -58,12 +73,14 @@ export default {
     })
   },
   methods: {
+    ...mapMutations('channels', ['setChannels']),
     // 获取用户频道
     async getUserChannel () {
       const { data: { data: { channels } } } = await reqGetUserChannel()
       console.log(channels)
       // 将用户频道列表存储
-      this.channels = channels
+      // 提交一个mutation，将我的频道的数据存储在vuex中
+      this.setChannels(channels)
     },
     // 删除时显示弹出框
     showMore (boo, channelId) {
@@ -99,7 +116,7 @@ export default {
     .van-tabs__wrap{
       position: fixed;
       top: 46px;
-      left: 0;
+      right: 37px;
       width: 100%; // 定位的元素不设置宽度 默认由内容撑开
     }
     .van-tabs__content {
@@ -109,7 +126,20 @@ export default {
         height: 100%;
         overflow: scroll;
       }
-
+    }
+    // 频道管理的开关按钮
+    .bar-btn {
+      position: fixed;
+      right: 5px;
+      top: 57px;
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      opacity: 0.8;
+      z-index:1;
+      .van-icon-wap-nav{
+        font-size: 20px;
+      }
     }
   }
 }
